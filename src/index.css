@@ -1,0 +1,22 @@
+.border {
+    width: 30px;
+    height: 30px;
+    overflow-y: hidden;
+    font-size: 15px;
+}
+
+.test {
+    overflow: hidden;
+    height: 30px;
+    text-align: center;
+}
+
+.moveTop {
+    transition: transform 100ms ease-out;
+    transform: translate(0, -100%);
+}
+
+.moveDown {
+    transition: transform 100ms ease-out;
+    transform: translate(0, 100%);
+}
