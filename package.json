@@ -4,9 +4,9 @@
   "description": "Scrollable number picker",
   "main": "dist/bundle.js",
   "scripts": {
-    "dev": "webpack-dev-server --mode development --config webpack.config.dev.js --open",
-    "build": "webpack -p",
-    "example": "npm run build && npm run dev",
+    "prepublish": "webpack -p",
+    "build:example": "webpack -p --config webpack.config.demo.js",
+    "example": "webpack -p && webpack-dev-server --mode development --config webpack.config.demo.js --open",
     "lint": "eslint --fix src"
   },
   "repository": {

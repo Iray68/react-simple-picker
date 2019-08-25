@@ -1,6 +1,6 @@
 //@flow
 import { render } from 'react-dom';
-import Picker from '../src/index';
+import Picker from '../dist/bundle';
 import React from 'react';
 import 'normalize.css';
 import styles from './index.css';

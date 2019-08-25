@@ -4362,6 +4362,25 @@ react-is@^16.8.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.9.0.tgz#21ca9561399aad0ff1a7701c01683e8ca981edcb"
   integrity sha512-tJBzzzIgnnRfEm046qRcURvwQnZVXmuCbscxUO5RWrGTXpon2d4c8mI0D8WE6ydVIm29JiLB6+RslkIvym9Rjw==
 
+react-simple-picker@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/react-simple-picker/-/react-simple-picker-1.0.0.tgz#c76abc802390665ec61c4dad736dae6437be7d97"
+  integrity sha512-cF+m6NA0lF/tny2AtFqwb9o7D5C/6jLL6tHofQp6VFAQVjU0hQMPmgOU3RNk8I3PI9FO2X4Tm88orv0lV11zCA==
+  dependencies:
+    lodash "^4.17.15"
+    normalize.css "^8.0.1"
+    react-with-gesture "^4.0.8"
+
+react-simple-picker@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/react-simple-picker/-/react-simple-picker-1.0.1.tgz#ac68174b3cab200557b427215e37fa21075378aa"
+  integrity sha512-TdEhKDwuwfoYNczUCtnUCyTPVy7761gIBu7nZxio1SaasG9qRpIZwtULTFK1aW+oCiq0N8eVipoLQwNNPZnGdA==
+  dependencies:
+    lodash "^4.17.15"
+    normalize.css "^8.0.1"
+    react-simple-picker "^1.0.0"
+    react-with-gesture "^4.0.8"
+
 react-with-gesture@^4.0.8:
   version "4.0.8"
   resolved "https://registry.yarnpkg.com/react-with-gesture/-/react-with-gesture-4.0.8.tgz#ce6db9e667ef13120797e641f1a00f934aed6c36"
