@@ -10,69 +10,72 @@ const mapStateToProps = state => {
   return {
     current: state.current,
     moving: state.moving
-  }
+  };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    setCurrent: (value) => {
+    setCurrent: value => {
       dispatch(setCurrent(value));
     },
-    setMoving: (value) => {
+    setMoving: value => {
       dispatch(setMoving(value));
     }
-  }
+  };
 };
 
-const getMask = (itemHeight) => ({className, style, ...others}) => (
-    <div
-        className={[styles.mask, className].join(' ')}
-        {...others}
-        style={Object.assign({ height: itemHeight }, style)}
-    />
+const getMask = itemHeight => ({ className, style, ...others }) => (
+  <div
+    className={[styles.mask, className].join(' ')}
+    {...others}
+    style={Object.assign({ height: itemHeight }, style)}
+  />
 );
 
-const Button = ({ icon: Icon, ...others}) => (
-    <button className={styles.button} {...others}>
-      <Icon />
-    </button>
+const Button = ({ icon: Icon, ...others }) => (
+  <button className={styles.button} {...others}>
+    <Icon />
+  </button>
 );
 
-const Row = ({ style, value }) =>
-    <div className={styles.number} style={style}>{ value }</div>;
+const Row = ({ style, value }) => (
+  <div className={styles.number} style={style}>
+    {value}
+  </div>
+);
 
 const Picker = ({
-      className,
-      style,
-      scrollerBackground = 'white',
-      minCount = 0,
-      initCount = minCount,
-      maxCount,
-      preloadCount = 2,
-      onChange,
-      height = 150,
-      iconAdd = (props) => (
-          <i className="material-icons">keyboard_arrow_up</i>
-      ),
-      iconMinus = (props) => (
-          <i className="material-icons">keyboard_arrow_down</i>
-      ),
-      renderMask = (Mask) => <Mask />
-    }) => {
-
-  const [state, dispatch] = createReducer({ current: initCount });
-
-  const { current, moving } = mapStateToProps(state);
-  const { setCurrent, setMoving } = mapDispatchToProps(dispatch);
-
+  className,
+  style,
+  scrollerBackground = 'white',
+  minCount,
+  maxCount,
+  preloadCount = 2,
+  onChange,
+  height = 150,
+  iconAdd = props => <i className="material-icons">keyboard_arrow_up</i>,
+  iconMinus = props => <i className="material-icons">keyboard_arrow_down</i>,
+  renderMask = Mask => <Mask />,
+  current,
+  moving,
+  setCurrent,
+  setMoving
+}) => {
   const timer = useRef(null);
   const layoutRef = useRef(null);
   const touchRef = useRef(false);
-  const [bind, { velocity, down, delta : [x, y]}] = useGesture();
+  const [
+    bind,
+    {
+      velocity,
+      down,
+      delta: [x, y]
+    }
+  ] = useGesture();
   const diffY = Math.abs(y);
   const displayLoop = minCount === 0;
 
-  const itemHeight = height/5;
+  const itemHeight = height / 5;
 
   useEffect(() => {
     layoutRef.current.scrollTo(0, itemHeight * (preloadCount - 1));
@@ -81,7 +84,7 @@ const Picker = ({
     return () => clearTimeout(timer.current);
   }, []);
 
-  const selectNumber = (n) => {
+  const selectNumber = n => {
     if (n === null) {
       return;
     }
@@ -125,7 +128,7 @@ const Picker = ({
       return current;
     }
 
-    return diff > 0 ? next(current, diff) : prev(current, diff * -1)
+    return diff > 0 ? next(current, diff) : prev(current, diff * -1);
   };
 
   const endMoving = () => {
@@ -133,14 +136,14 @@ const Picker = ({
     setMoving('');
   };
 
-  const move = (operator, animationStyle, skipAnimation, i = 1,  j = i) => {
+  const move = (operator, animationStyle, skipAnimation, i = 1, j = i) => {
     if (skipAnimation) {
       selectNumber(operator(current, j));
       return;
     }
 
-    const movingTime = (i === 1) ? 150/2 : 150 - i * 2;
-    setMoving({className: animationStyle, time: movingTime});
+    const movingTime = i === 1 ? 150 / 2 : 150 - i * 2;
+    setMoving({ className: animationStyle, time: movingTime });
 
     timer.current = setTimeout(() => {
       selectNumber(operator(current, j - i + 1));
@@ -148,24 +151,25 @@ const Picker = ({
 
       if (i - 1 > 0 && !touchRef.current) {
         requestAnimationFrame(() =>
-            move(operator, animationStyle, skipAnimation, i - 1, j));
+          move(operator, animationStyle, skipAnimation, i - 1, j)
+        );
       }
     }, movingTime);
   };
 
   const add = (i = 1, skipAnimation) =>
-      move(next, styles.moveDown, skipAnimation, Math.round(i));
+    move(next, styles.moveDown, skipAnimation, Math.round(i));
   const minus = (i = 1, skipAnimation) =>
-      move(prev, styles.moveUp, skipAnimation, Math.round(i));
+    move(prev, styles.moveUp, skipAnimation, Math.round(i));
 
   const handleGesture = () => {
-    const ratio = (velocity < 1) ? 1 : velocity/2;
+    const ratio = velocity < 1 ? 1 : velocity / 2;
     const skipAnimation = velocity < 0.2 && diffY > itemHeight;
 
-    let movingCount = Math.abs(y/itemHeight * ratio);
+    let movingCount = Math.abs((y / itemHeight) * ratio);
 
     if (displayLoop) {
-      movingCount = movingCount > maxCount ? maxCount - (1/ratio) : movingCount;
+      movingCount = movingCount > maxCount ? maxCount - 1 / ratio : movingCount;
     }
 
     if (y > 0) {
@@ -198,60 +202,77 @@ const Picker = ({
   }
 
   return (
+    <div
+      className={[styles.border, className].join(' ')}
+      style={Object.assign({ height: `${height}px` }, style)}
+    >
+      <Button
+        icon={iconAdd}
+        onClick={() => {
+          endMoving();
+          add();
+        }}
+      />
       <div
-          className={[styles.border, className].join(' ')}
-          style={Object.assign({ height: `${height}px` }, style)}
+        ref={layoutRef}
+        className={styles.layout}
+        onClick={() => console.log('click')}
+        style={{ background: scrollerBackground }}
       >
-        <Button
-            icon={iconAdd}
-            onClick={() => {
-              endMoving();
-              add();
-            }}
-        />
+        {renderMask(getMask(itemHeight))}
         <div
-            ref={layoutRef}
-            className={styles.layout}
-            onClick={() => console.log('click')}
-            style={{ background: scrollerBackground }}
-        >
-          {renderMask(getMask(itemHeight))}
-          <div
-              {...bind()}
-              className={moving.className}
-              style={
-                touchRef.current ? { transform: `translateY(${y}px)`} : {
-                  transition: moving.time ?
-                      `transform ${moving.time}ms ease-out` : 'unset'
+          {...bind()}
+          className={moving.className}
+          style={
+            touchRef.current
+              ? { transform: `translateY(${y}px)` }
+              : {
+                  transition: moving.time
+                    ? `transform ${moving.time}ms ease-out`
+                    : 'unset'
                 }
-              }
-          >
-            {
-              range(preloadCount, -1 * preloadCount).map(diff =>
-                  <Row
-                      style={{
-                        height: itemHeight,
-                        lineHeight: `${itemHeight}px`,
-                        transform: touchRef.current ? `rotateX(${
-                        45 * (diff + -y/itemHeight)
-                            }deg)` : `rotateX(${45 * diff}deg)`
-                      }}
-                      key={diff}
-                      value={calculate(current, diff)}
-                  />
-              )
-            }
-          </div>
+          }
+        >
+          {range(preloadCount, -1 * preloadCount).map(diff => (
+            <Row
+              style={{
+                height: itemHeight,
+                lineHeight: `${itemHeight}px`,
+                transform: touchRef.current
+                  ? `rotateX(${45 * (diff + -y / itemHeight)}deg)`
+                  : `rotateX(${45 * diff}deg)`
+              }}
+              key={diff}
+              value={calculate(current, diff)}
+            />
+          ))}
         </div>
-        <Button
-            icon={iconMinus}
-            onClick={() => {
-              endMoving();
-              minus();
-            }}
-        />
       </div>
+      <Button
+        icon={iconMinus}
+        onClick={() => {
+          endMoving();
+          minus();
+        }}
+      />
+    </div>
   );
 };
 
-export default Picker;
+export default ({ minCount = 0, initCount = minCount, ...others }) => {
+  const [state, dispatch] = createReducer({ current: initCount });
+
+  const { current, moving } = mapStateToProps(state);
+  const { setCurrent, setMoving } = mapDispatchToProps(dispatch);
+
+  return (
+    <Picker
+      minCount={minCount}
+      current={current}
+      moving={moving}
+      setCurrent={setCurrent}
+      setMoving={setMoving}
+      {...others}
+    />
+  );
+};

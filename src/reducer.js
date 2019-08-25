@@ -7,7 +7,7 @@ const initialState = {
   moving: {}
 };
 
-const reducer = (state, action ) => {
+const reducer = (state, action) => {
   switch (action.type) {
     case CHANGE_MOVING_STATUS:
       return updateObject(state, { moving: action.moving });
@@ -18,5 +18,5 @@ const reducer = (state, action ) => {
   }
 };
 
-export default (initialArgs) =>
-    useReducer(reducer, updateObject(initialState, initialArgs));
+export default initialArgs =>
+  useReducer(reducer, updateObject(initialState, initialArgs));
