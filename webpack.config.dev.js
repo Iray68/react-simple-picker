@@ -1,14 +1,12 @@
 var path = require('path');
 module.exports = {
   entry: [
-    './src/index.js'
+    './example/index.js'
   ],
   output: {
     path: path.resolve(__dirname, 'dist'),
-    libraryTarget: 'umd',
-    library: 'number-picker',
-    filename: 'bundle.js',
-    umdNamedDefine: true
+    publicPath: '/dist/',
+    filename: 'example.js'
   },
   module: {
     rules: [
@@ -33,16 +31,19 @@ module.exports = {
               },
               importLoaders: 1,
               sourceMap: true,
-              localsConvention: 'camelCase'
+              localsConvention: 'camelCase',
             }
           }
-        ]
+        ],
+        exclude: /node_modules/,
+      },
+      {
+        test: /\.css$/,
+        use: [
+          "style-loader", "css-loader"
+        ],
+        include: /node_modules/,
       }
     ]
-  },
-  externals:[
-    {
-      react: 'react'
-    }
-  ]
+  }
 };

@@ -1,22 +1,47 @@
-.border {
-    width: 30px;
-    height: 30px;
-    overflow-y: hidden;
-    font-size: 15px;
+:root {
+    --item-height: 30px;
 }
 
-.test {
-    overflow: hidden;
-    height: 30px;
+.border {
+    min-width: 40px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.layout {
+    flex: 3 3;
+    overflow-y: hidden;
+    font-size: 15px;
+    z-index: 9;
+}
+
+.number {
+    width: 100%;
     text-align: center;
 }
 
-.moveTop {
-    transition: transform 100ms ease-out;
-    transform: translate(0, -100%);
+.move-up {
+    transform: translate(0, calc(var(--item-height) * -1));
 }
 
-.moveDown {
-    transition: transform 100ms ease-out;
-    transform: translate(0, 100%);
+.move-down {
+    transform: translate(0, var(--item-height));
+}
+
+.mask {
+    top: 40%;
+    width: 100%;
+    position: absolute;
+    box-sizing: border-box;
+    background-color: rgba(0, 0, 0, 0.3);
+    /*z-index: -1;*/
+}
+
+.button {
+    flex: 1 1;
+    border: 0;
+    background-color: transparent;
+    height: 100%;
+    padding: 0;
 }

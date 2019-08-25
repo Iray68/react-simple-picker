@@ -1,22 +1,48 @@
 {
-  "name": "number-picker-practice",
+  "name": "react-simple-picker",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "scrollable number picker",
+  "main": "dist/bundle.js",
   "scripts": {
-    "dev": "webpack-dev-server --mode development --open",
-    "build": "webpack -p"
+    "dev": "webpack-dev-server --mode development --config webpack.config.dev.js --open",
+    "build": "webpack -p",
+    "example": "npm run build && npm run dev"
   },
-  "author": "",
-  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Iray68/react-simple-picker.git"
+  },
+  "author": "iray68",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Iray68/react-simple-picker/issues"
+  },
+  "homepage": "https://github.com/Iray68/react-simple-picker#readme",
   "devDependencies": {
     "@babel/core": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
+    "@babel/preset-react": "^7.0.0",
     "babel-loader": "^8.0.6",
     "css-loader": "^3.2.0",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
     "style-loader": "^1.0.0",
     "webpack": "^4.39.2",
     "webpack-cli": "^3.3.7",
     "webpack-dev-server": "^3.8.0"
-  }
+  },
+  "dependencies": {
+    "lodash": "^4.17.15",
+    "normalize.css": "^8.0.1",
+    "react-with-gesture": "^4.0.8"
+  },
+  "directories": {
+    "example": "example"
+  },
+  "keywords": [
+    "picker",
+    "react",
+    "hook",
+    "date-picker"
+  ]
 }
