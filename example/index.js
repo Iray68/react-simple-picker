@@ -1,5 +1,6 @@
+//@flow
 import { render } from 'react-dom';
-import Picker from '../dist/bundle';
+import Picker from '../src/index';
 import React from 'react';
 import 'normalize.css';
 import styles from './index.css';
@@ -9,13 +10,12 @@ if (
   navigator.userAgent.match(/iPhone/i) ||
   navigator.userAgent.match(/iPad/i)
 ) {
-  document.ontouchmove = function(event) {
+  document.ontouchmove = function(event: Event) {
     event.preventDefault();
   };
 }
 
 const IconAdd = props => <div {...props}>+</div>;
-
 const IconMinus = props => <div {...props}>-</div>;
 
 render(
