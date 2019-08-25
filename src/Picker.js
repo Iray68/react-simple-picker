@@ -60,6 +60,10 @@ const Picker = ({
   setCurrent,
   setMoving
 }: PickerPropsType) => {
+  if (!maxCount) {
+    throw new Error('Please input maxCount parameter');
+  }
+
   const timer = useRef(null);
   const layoutRef = useRef(null);
   const touchRef = useRef(false);
@@ -93,7 +97,7 @@ const Picker = ({
     }
 
     setCurrent(n);
-    onChange(n);
+    if (onChange) onChange(n);
   };
 
   const next = (i, t = 1) => {

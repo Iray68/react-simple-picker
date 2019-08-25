@@ -1,7 +1,7 @@
 {
   "name": "react-simple-picker",
-  "version": "1.0.0",
-  "description": "scrollable number picker",
+  "version": "1.0.1",
+  "description": "Scrollable number picker",
   "main": "dist/bundle.js",
   "scripts": {
     "dev": "webpack-dev-server --mode development --config webpack.config.dev.js --open",
