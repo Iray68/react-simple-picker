@@ -5,16 +5,6 @@ import React from 'react';
 import 'normalize.css';
 import styles from './index.css';
 
-// avoid ios bouncing
-if (
-  navigator.userAgent.match(/iPhone/i) ||
-  navigator.userAgent.match(/iPad/i)
-) {
-  document.ontouchmove = function(event: Event) {
-    event.preventDefault();
-  };
-}
-
 const IconAdd = props => <div {...props}>+</div>;
 const IconMinus = props => <div {...props}>-</div>;
 
