@@ -2,9 +2,9 @@
 import React from 'react';
 import styles from './index.css';
 
-const Button = ({ icon: Icon, ...others }: { icon: ?Component }) => (
+const Button = ({ icon, ...others }: { icon: HTMLElement }) => (
   <button className={styles.button} {...others}>
-    <Icon />
+    {icon}
   </button>
 );
 

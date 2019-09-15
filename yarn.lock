@@ -4381,6 +4381,16 @@ react-simple-picker@^1.0.1:
     react-simple-picker "^1.0.0"
     react-with-gesture "^4.0.8"
 
+react-simple-picker@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/react-simple-picker/-/react-simple-picker-1.0.2.tgz#c391485e6e9b45c468eab750cd816b3f8de9915d"
+  integrity sha512-GjHlEb0W+cP9BBwpBNOWP5+UlDJ887YOzsewvETysNychN+xXJ96nehhEx+O2VdLolFSdcQtdjgkOaqWHZU1+Q==
+  dependencies:
+    lodash "^4.17.15"
+    normalize.css "^8.0.1"
+    react-simple-picker "^1.0.1"
+    react-with-gesture "^4.0.8"
+
 react-with-gesture@^4.0.8:
   version "4.0.8"
   resolved "https://registry.yarnpkg.com/react-with-gesture/-/react-with-gesture-4.0.8.tgz#ce6db9e667ef13120797e641f1a00f934aed6c36"

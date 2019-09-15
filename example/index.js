@@ -5,21 +5,35 @@ import React from 'react';
 import 'normalize.css';
 import styles from './index.css';
 
-const IconAdd = props => <div {...props}>+</div>;
-const IconMinus = props => <div {...props}>-</div>;
+const Text = ({ text, className }: { text: string, className?: string }) => (
+  <div className={className}>{text}</div>
+);
+Text.displayName = 'Text';
+
+const renderCustomMask = (className, style) => {
+  const CustomMask = Mask => <Mask className={className} style={style} />;
+
+  CustomMask.displayName = 'CustomMask';
+
+  return CustomMask;
+};
+
+const MaskDateRender = renderCustomMask(styles.dateMask);
+
+const handleChange = tag => number => console.log(tag, number);
 
 render(
-  <div style={{ display: 'flex' }}>
+  <div className={styles.layout}>
     <Picker
       height={300}
-      iconAdd={IconAdd}
-      iconMinus={IconMinus}
+      iconAdd={<Text text="+" />}
+      iconMinus={<Text text="-" />}
       initCount={2019}
       minCount={1970}
       maxCount={2999}
       preloadCount={8}
-      renderMask={Mask => <Mask className={styles.dateMask} />}
-      onChange={number => console.log('year', number)}
+      renderMask={MaskDateRender}
+      onChange={handleChange('year')}
     />
     <Picker
       height={300}
@@ -27,8 +41,8 @@ render(
       minCount={1}
       maxCount={12}
       preloadCount={8}
-      renderMask={Mask => <Mask className={styles.dateMask} />}
-      onChange={number => console.log('month', number)}
+      renderMask={MaskDateRender}
+      onChange={handleChange('month')}
     />
     <Picker
       height={300}
@@ -36,42 +50,34 @@ render(
       minCount={1}
       maxCount={31}
       preloadCount={8}
-      renderMask={Mask => <Mask className={styles.dateMask} />}
-      onChange={number => console.log('day', number)}
+      renderMask={MaskDateRender}
+      onChange={handleChange('day')}
     />
 
     <Picker
       initCount={6}
       maxCount={23}
       preloadCount={8}
-      onChange={number => console.log('hour', number)}
+      onChange={handleChange('hour')}
     />
     <Picker
       initCount={6}
       maxCount={59}
       preloadCount={8}
-      onChange={number => console.log('minute', number)}
+      onChange={handleChange('minute')}
     />
     <Picker
-      style={{
-        width: '40px',
-        backgroundColor: '#4c4c4c'
-      }}
-      iconAdd={props => <IconAdd className={styles.whiteButtonB} />}
-      iconMinus={props => <IconMinus className={styles.whiteButtonT} />}
+      className={styles.customPicker}
+      iconAdd={<Text className={styles.whiteButtonB} text="+" />}
+      iconMinus={<Text className={styles.whiteButtonT} text="-" />}
       height={130}
       initCount={6}
       maxCount={59}
       preloadCount={8}
-      renderMask={Mask => (
-        <Mask
-          className={styles.gradientMask}
-          style={{
-            height: 'calc(60% - 2px)'
-          }}
-        />
-      )}
-      onChange={number => console.log('second', number)}
+      renderMask={renderCustomMask(styles.gradientMask, {
+        height: 'calc(60% - 2px)'
+      })}
+      onChange={handleChange('second')}
     />
   </div>,
   document.querySelector('#app')
