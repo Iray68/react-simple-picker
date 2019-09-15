@@ -1,6 +1,6 @@
 {
   "name": "react-simple-picker",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Scrollable number picker",
   "main": "dist/bundle.js",
   "scripts": {
