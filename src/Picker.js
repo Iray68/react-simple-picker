@@ -219,7 +219,6 @@ const Picker = ({
       <div
         ref={layoutRef}
         className={styles.layout}
-        onClick={() => console.log('click')}
         style={{ background: scrollerBackground }}
       >
         {renderMask(getMask(itemHeight))}
