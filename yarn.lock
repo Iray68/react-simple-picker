@@ -4362,45 +4362,6 @@ react-is@^16.8.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.9.0.tgz#21ca9561399aad0ff1a7701c01683e8ca981edcb"
   integrity sha512-tJBzzzIgnnRfEm046qRcURvwQnZVXmuCbscxUO5RWrGTXpon2d4c8mI0D8WE6ydVIm29JiLB6+RslkIvym9Rjw==
 
-react-simple-picker@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/react-simple-picker/-/react-simple-picker-1.0.0.tgz#c76abc802390665ec61c4dad736dae6437be7d97"
-  integrity sha512-cF+m6NA0lF/tny2AtFqwb9o7D5C/6jLL6tHofQp6VFAQVjU0hQMPmgOU3RNk8I3PI9FO2X4Tm88orv0lV11zCA==
-  dependencies:
-    lodash "^4.17.15"
-    normalize.css "^8.0.1"
-    react-with-gesture "^4.0.8"
-
-react-simple-picker@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/react-simple-picker/-/react-simple-picker-1.0.1.tgz#ac68174b3cab200557b427215e37fa21075378aa"
-  integrity sha512-TdEhKDwuwfoYNczUCtnUCyTPVy7761gIBu7nZxio1SaasG9qRpIZwtULTFK1aW+oCiq0N8eVipoLQwNNPZnGdA==
-  dependencies:
-    lodash "^4.17.15"
-    normalize.css "^8.0.1"
-    react-simple-picker "^1.0.0"
-    react-with-gesture "^4.0.8"
-
-react-simple-picker@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/react-simple-picker/-/react-simple-picker-1.0.2.tgz#c391485e6e9b45c468eab750cd816b3f8de9915d"
-  integrity sha512-GjHlEb0W+cP9BBwpBNOWP5+UlDJ887YOzsewvETysNychN+xXJ96nehhEx+O2VdLolFSdcQtdjgkOaqWHZU1+Q==
-  dependencies:
-    lodash "^4.17.15"
-    normalize.css "^8.0.1"
-    react-simple-picker "^1.0.1"
-    react-with-gesture "^4.0.8"
-
-react-simple-picker@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/react-simple-picker/-/react-simple-picker-1.0.3.tgz#ee8fe628d83506fc0e342fcb87f0aac4fde6378b"
-  integrity sha512-JFgKbUxCWuglOO5lOkG9uT4ew9+otFfi1rC/akrYEjLqwVAEXLrUx3xnTugP9+gs2cNSbYnBjU4i9vprQ5mDqA==
-  dependencies:
-    lodash "^4.17.15"
-    normalize.css "^8.0.1"
-    react-simple-picker "^1.0.2"
-    react-with-gesture "^4.0.8"
-
 react-with-gesture@^4.0.8:
   version "4.0.8"
   resolved "https://registry.yarnpkg.com/react-with-gesture/-/react-with-gesture-4.0.8.tgz#ce6db9e667ef13120797e641f1a00f934aed6c36"
@@ -5552,9 +5513,9 @@ websocket-driver@>=0.5.1:
     websocket-extensions ">=0.1.1"
 
 websocket-extensions@>=0.1.1:
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/websocket-extensions/-/websocket-extensions-0.1.3.tgz#5d2ff22977003ec687a4b87073dfbbac146ccf29"
-  integrity sha512-nqHUnMXmBzT0w570r2JpJxfiSD1IzoI+HGVdd3aZ0yNi3ngvQ4jv1dtHt5VGxfI2yj5yqImPhOK4vmIh2xMbGg==
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/websocket-extensions/-/websocket-extensions-0.1.4.tgz#7f8473bc839dfd87608adb95d7eb075211578a42"
+  integrity sha512-OqedPIGOfsDlo31UNwYbCFMSaO9m9G/0faIHj5/dZFDMFqPTcx6UwqyOy3COEaEOg/9VsGIpdqn62W5KhoKSpg==
 
 which-module@^2.0.0:
   version "2.0.0"
