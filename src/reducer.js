@@ -1,13 +1,15 @@
+// @flow
 import { useReducer } from 'react';
 import { CHANGE_MOVING_STATUS, SET_CURRENT } from './action';
 import { updateObject } from './util';
+import type { PickerStateType } from './index';
 
-const initialState = {
+const initialState: PickerStateType = {
   current: 0,
   moving: {}
 };
 
-const reducer = (state, action) => {
+const reducer = (state: PickerStateType, action) => {
   switch (action.type) {
     case CHANGE_MOVING_STATUS:
       return updateObject(state, { moving: action.moving });
@@ -18,5 +20,5 @@ const reducer = (state, action) => {
   }
 };
 
-export default initialArgs =>
+export default (initialArgs: PickerStateType) =>
   useReducer(reducer, updateObject(initialState, initialArgs));

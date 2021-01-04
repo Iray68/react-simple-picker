@@ -1,17 +1,20 @@
 //@flow
-import React, { Component, useRef, useEffect } from 'react';
+import React, { ComponentType, Element, useRef, useEffect } from 'react';
 import { useGesture } from 'react-with-gesture';
 import styles from './index.css';
 import Button from './Button';
 import { range } from 'lodash';
 import Row from './Row';
+import type { AnimeType, MovingType } from './index';
+
+const MAX_ANIME_TIME: number = 150;
 
 type MaskPropsType = {
   className: ?string,
   style: ?StyleSheet
 };
 
-const getMask = itemHeight => {
+const getMask = (itemHeight: number): ComponentType<MaskPropsType> => {
   const Mask = ({ className, style, ...others }: MaskPropsType) => (
     <div
       className={[styles.mask, className].join(' ')}
@@ -36,11 +39,93 @@ type PickerPropsType = {
   height: ?number,
   iconAdd: HTMLElement,
   iconMinus: HTMLElement,
-  renderMask?: Component => Component,
+  renderMask?: (
+    ComponentType<MaskPropsType>
+  ) => Element<ComponentType<MaskPropsType>>,
   current: ?number,
-  moving: ?number,
+  moving: ?MovingType,
   setCurrent?: number => void,
-  setMoving?: number => void
+  setMoving?: MovingType => void
+};
+
+const nextGenerator = (maxCount, displayLoop, minCount) => {
+  const next = (current, diff = 1) => {
+    const total = current + diff;
+    if (total > maxCount) {
+      if (!displayLoop) {
+        return null;
+      }
+
+      return total - maxCount - 1 + minCount;
+    }
+
+    return total;
+  };
+  return next;
+};
+
+const prevGenerator = (minCount, displayLoop, maxCount) => {
+  const prev = (current, diff = 1) => {
+    const total = current - diff;
+    if (total < minCount) {
+      if (!displayLoop) {
+        return null;
+      }
+
+      return maxCount + 1 + total - minCount;
+    }
+
+    return total;
+  };
+  return prev;
+};
+
+const calculateGenerator = (next, prev) => {
+  const calculate = (current, diff) => {
+    if (diff === 0) {
+      return current;
+    }
+
+    return diff > 0 ? next(current, diff) : prev(current, diff * -1);
+  };
+  return calculate;
+};
+
+const moveHandler = (
+  selectNumber,
+  current,
+  setMoving,
+  timer,
+  endMoving,
+  touchRef
+) => {
+  const move = (
+    operator: (number, number) => number,
+    animationStyle: AnimeType,
+    isSkipAnimation: boolean,
+    i: number = 1,
+    j: number = i
+  ) => {
+    if (isSkipAnimation) {
+      selectNumber(operator(current, j));
+      return;
+    }
+
+    const movingTime = i === 1 ? MAX_ANIME_TIME / 2 : MAX_ANIME_TIME - i * 2;
+    setMoving({ className: animationStyle, time: movingTime });
+
+    timer.current = setTimeout(() => {
+      selectNumber(operator(current, j - i + 1));
+      endMoving();
+
+      if (i - 1 > 0 && !touchRef.current) {
+        requestAnimationFrame(() =>
+          move(operator, animationStyle, isSkipAnimation, i - 1, j)
+        );
+      }
+    }, movingTime);
+  };
+  return move;
 };
 
 const Picker = ({
@@ -72,11 +157,11 @@ const Picker = ({
     {
       velocity,
       down,
-      delta: [x, y]
+      delta: [, y]
     }
   ] = useGesture();
   const diffY = Math.abs(y);
-  const displayLoop = minCount === 0;
+  const isLoop = minCount === 0;
 
   const itemHeight = height / 5;
 
@@ -85,7 +170,7 @@ const Picker = ({
     layoutRef.current.style.setProperty('--item-height', `${itemHeight}px`);
 
     return () => clearTimeout(timer.current);
-  }, []);
+  }, [itemHeight, preloadCount]);
 
   const selectNumber = n => {
     if (n === null) {
@@ -100,92 +185,55 @@ const Picker = ({
     if (onChange) onChange(n);
   };
 
-  const next = (i, t = 1) => {
-    const total = i + t;
-    if (total > maxCount) {
-      if (!displayLoop) {
-        return null;
-      }
-
-      return total - maxCount - 1 + minCount;
-    }
-
-    return total;
-  };
-
-  const prev = (i, t = 1) => {
-    const total = i - t;
-    if (total < minCount) {
-      if (!displayLoop) {
-        return null;
-      }
-
-      return maxCount + 1 + total - minCount;
-    }
-
-    return total;
-  };
-
-  const calculate = (current, diff) => {
-    if (diff === 0) {
-      return current;
-    }
-
-    return diff > 0 ? next(current, diff) : prev(current, diff * -1);
-  };
+  const next = nextGenerator(maxCount, isLoop, minCount);
+  const prev = prevGenerator(minCount, isLoop, maxCount);
+  const calculate = calculateGenerator(next, prev);
 
   const endMoving = () => {
     clearTimeout(timer.current);
-    setMoving('');
+    setMoving({});
   };
 
-  const move = (operator, animationStyle, skipAnimation, i = 1, j = i) => {
-    if (skipAnimation) {
-      selectNumber(operator(current, j));
-      return;
-    }
+  const move = moveHandler(
+    selectNumber,
+    current,
+    setMoving,
+    timer,
+    endMoving,
+    touchRef
+  );
 
-    const movingTime = i === 1 ? 150 / 2 : 150 - i * 2;
-    setMoving({ className: animationStyle, time: movingTime });
-
-    timer.current = setTimeout(() => {
-      selectNumber(operator(current, j - i + 1));
-      endMoving();
-
-      if (i - 1 > 0 && !touchRef.current) {
-        requestAnimationFrame(() =>
-          move(operator, animationStyle, skipAnimation, i - 1, j)
-        );
-      }
-    }, movingTime);
+  const operatorWithNoAnime = operator => () => {
+    endMoving();
+    operator();
   };
 
-  const add = (i = 1, skipAnimation) =>
-    move(next, styles.moveDown, skipAnimation, Math.round(i));
-  const minus = (i = 1, skipAnimation) =>
-    move(prev, styles.moveUp, skipAnimation, Math.round(i));
+  const add = (count = 1, isSkipAnimation) =>
+    move(next, styles.moveDown, isSkipAnimation, Math.round(count));
+  const minus = (count = 1, isSkipAnimation) =>
+    move(prev, styles.moveUp, isSkipAnimation, Math.round(count));
 
   const handleGesture = () => {
     const ratio = velocity < 1 ? 1 : velocity / 2;
-    const skipAnimation = velocity < 0.2 && diffY > itemHeight;
+    const isSkipAnimation = velocity < 0.2 && diffY > itemHeight;
 
     let movingCount = Math.abs((y / itemHeight) * ratio);
 
-    if (displayLoop) {
+    if (isLoop) {
       movingCount = movingCount > maxCount ? maxCount - 1 / ratio : movingCount;
     }
 
     if (y > 0) {
-      if (!displayLoop && current + movingCount > maxCount) {
+      if (!isLoop && current + movingCount > maxCount) {
         movingCount = maxCount - current + 1;
       }
 
-      add(movingCount, skipAnimation);
+      add(movingCount, isSkipAnimation);
     } else {
-      if (!displayLoop && current - movingCount < minCount) {
+      if (!isLoop && current - movingCount < minCount) {
         movingCount = current - minCount + 1;
       }
-      minus(movingCount, skipAnimation);
+      minus(movingCount, isSkipAnimation);
     }
   };
 
@@ -209,13 +257,7 @@ const Picker = ({
       className={[styles.border, className].join(' ')}
       style={Object.assign({ height: `${height}px` }, style)}
     >
-      <Button
-        icon={iconAdd}
-        onClick={() => {
-          endMoving();
-          add();
-        }}
-      />
+      <Button icon={iconAdd} onClick={operatorWithNoAnime(add)} />
       <div
         ref={layoutRef}
         className={styles.layout}
@@ -250,13 +292,7 @@ const Picker = ({
           ))}
         </div>
       </div>
-      <Button
-        icon={iconMinus}
-        onClick={() => {
-          endMoving();
-          minus();
-        }}
-      />
+      <Button icon={iconMinus} onClick={operatorWithNoAnime(minus)} />
     </div>
   );
 };
