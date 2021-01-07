@@ -1,2 +1,2 @@
-export const updateObject = (oldObject, newValues) =>
-  Object.assign({}, oldObject, newValues);
+export const updateObject = (raw, newValues) =>
+  Object.assign({}, raw, newValues);

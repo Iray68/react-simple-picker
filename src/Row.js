@@ -2,7 +2,7 @@
 import React from 'react';
 import styles from './index.css';
 
-type RowPropsType = { style: ?StyleSheet, value: ?string };
+type RowPropsType = { style: ?Object, value: ?string };
 
 const Row = ({ style, value }: RowPropsType) => (
   <div className={styles.number} style={style}>

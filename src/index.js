@@ -8,13 +8,13 @@ import styles from './index.css';
 export type AnimeType = styles.moveDown | styles.moveUp;
 
 export type MovingType = {
-  className: AnimeType,
-  time: ?number
+  className?: AnimeType,
+  time?: number
 };
 
 export type PickerStateType = {
   current: number,
-  moving: MovingType
+  moving?: MovingType
 };
 
 const mapStateToProps = (state: PickerStateType) => {
@@ -41,8 +41,9 @@ export default ({
   initCount = minCount,
   ...others
 }: {
-  minCount: ?number,
-  initCount: ?number
+  minCount?: number,
+  initCount?: number,
+  maxCount: number
 }) => {
   const [state, dispatch] = createReducer({ current: initCount });
 
