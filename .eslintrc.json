@@ -32,6 +32,8 @@
         "prettier"
     ],
     "rules": {
+        "react/jsx-uses-react": "off",
+        "react/react-in-jsx-scope": "off",
         "react/display-name": ["error", { "ignoreTranspilerName": true }],
         "react/jsx-no-bind": "error",
         "no-undef": "warn",
