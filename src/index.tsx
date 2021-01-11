@@ -1,4 +1,4 @@
-import React, { ComponentType } from 'react';
+import { ComponentType } from 'react';
 import { setCurrent, setMoving } from './action';
 import createReducer, { Dispatch } from './reducer';
 import Picker, { MaskProps, PickerProps } from './Picker';

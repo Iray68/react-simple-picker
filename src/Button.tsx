@@ -1,4 +1,4 @@
-import React, { ButtonHTMLAttributes, ComponentType } from 'react';
+import { ButtonHTMLAttributes, ComponentType } from 'react';
 import styles from './index.css';
 import { ReactElement } from 'react';
 

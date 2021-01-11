@@ -1,4 +1,4 @@
-import React, { ComponentType, CSSProperties } from 'react';
+import { ComponentType, CSSProperties } from 'react';
 import styles from './index.css';
 
 interface RowProps {

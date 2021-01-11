@@ -1,10 +1,10 @@
 import { render } from 'react-dom';
 import { MaskComponent } from '../dist/index';
-import React, { Suspense, CSSProperties } from 'react';
+import { lazy, Suspense, CSSProperties } from 'react';
 import 'normalize.css';
 import styles from './index.css';
 
-const Picker = React.lazy(() =>
+const Picker = lazy(() =>
   import(/* webpackChunkName: "Picker" */ '../dist/index')
 );
 

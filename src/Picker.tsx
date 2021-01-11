@@ -1,10 +1,11 @@
 import {
+  useRef,
   ComponentType,
   CSSProperties,
+  MouseEventHandler,
   MutableRefObject,
   ReactElement
 } from 'react';
-import React, { useRef } from 'react';
 import styles from './index.css';
 import Button from './Button';
 import { range } from 'lodash';
@@ -131,7 +132,7 @@ const Picker: ComponentType<InnerPickerProps> = ({
 
   const operatorWithNoAnime = (
     operator: MoveOperator
-  ): React.MouseEventHandler<HTMLButtonElement> => () => {
+  ): MouseEventHandler<HTMLButtonElement> => () => {
     endMoving();
     operator();
   };
