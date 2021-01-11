@@ -1,20 +1,25 @@
 var path = require('path');
 module.exports = {
-  entry: ['./src/index.js'],
+  entry: ['./src/index.tsx'],
   output: {
     path: path.resolve(__dirname, 'dist'),
     libraryTarget: 'umd',
     library: 'number-picker',
-    filename: 'bundle.js',
+    filename: 'index.js',
     umdNamedDefine: true
   },
   module: {
     rules: [
       {
-        test: /\.js$/,
-        exclude: /node_modules/,
+        test: /\.(js|ts|tsx)$/,
         use: {
-          loader: 'babel-loader'
+          loader: 'babel-loader',
+          options: {
+            compact: true
+          }
+        },
+        resolve: {
+          extensions: ['.js', '.ts', '.tsx']
         }
       },
       {
