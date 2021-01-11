@@ -1,8 +1,6 @@
-// @flow
-export type MoveOperatorType = (
-  movingCount?: number,
-  isSkipAnimation?: boolean
-) => void;
+export interface MoveOperator {
+  (movingCount?: number, isSkipAnimation?: boolean): void;
+}
 
 export function initGestureHandler(
   velocity: number,
@@ -13,8 +11,8 @@ export function initGestureHandler(
   maxCount: number,
   current: number,
   minCount: number,
-  next: MoveOperatorType,
-  prev: MoveOperatorType
+  next: MoveOperator,
+  prev: MoveOperator
 ): () => void {
   const handleGesture = () => {
     const ratio = velocity < 1 ? 1 : velocity / 2;

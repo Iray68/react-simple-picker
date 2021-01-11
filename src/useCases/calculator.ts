@@ -1,12 +1,13 @@
-// @flow
-export type OperatorType = (raw: number, count: number) => number | null;
+export interface Operator {
+  (raw: number, count: number): number | null;
+}
 
 export function addGenerator(
   maxCount: number,
   displayLoop: boolean,
   minCount: number
-): OperatorType {
-  const add: OperatorType = (current, diff = 1) => {
+): Operator {
+  const add: Operator = (current, diff = 1) => {
     const total = current + diff;
     if (total > maxCount) {
       if (!displayLoop) {
@@ -24,8 +25,8 @@ export function minusGenerator(
   minCount: number,
   displayLoop: boolean,
   maxCount: number
-): OperatorType {
-  const minus: OperatorType = (current, diff = 1) => {
+): Operator {
+  const minus: Operator = (current, diff = 1) => {
     const total = current + diff * -1;
     if (total < minCount) {
       if (!displayLoop) {
@@ -39,11 +40,8 @@ export function minusGenerator(
   };
   return minus;
 }
-export function calculateGenerator(
-  next: OperatorType,
-  prev: OperatorType
-): OperatorType {
-  const calculate = (current, diff) => {
+export function calculateGenerator(next: Operator, prev: Operator): Operator {
+  const calculate = (current: number, diff: number) => {
     if (diff === 0) {
       return current;
     }

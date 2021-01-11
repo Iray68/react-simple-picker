@@ -1,31 +1,35 @@
-//@flow
-import type { ComponentType, Element } from 'react';
+import {
+  ComponentType,
+  CSSProperties,
+  MutableRefObject,
+  ReactElement
+} from 'react';
 import React, { useRef } from 'react';
 import styles from './index.css';
 import Button from './Button';
 import { range } from 'lodash';
 import Row from './Row';
-import type { MovingType } from './index';
+import { DispatchMapProps, PickerState } from './index';
 import {
   addGenerator,
   calculateGenerator,
   minusGenerator
 } from './useCases/calculator';
-import { initGestureHandler } from './useCases/gesture';
+import { initGestureHandler, MoveOperator } from './useCases/gesture';
 import { useGestureEffect } from './hook/useGestureEffect';
-import type { TouchRefType } from './useCases/move';
+import { SelectNumberOperator, TouchRef } from './useCases/move';
 import { updateObject } from './util';
 
-type MaskPropsType = {
-  className: ?string,
-  style: ?StyleSheet
-};
+export interface MaskProps {
+  className?: string;
+  style?: CSSProperties;
+}
 
-const updateHeightWithStyle = (height, style) =>
+const updateHeightWithStyle = (height: number, style?: CSSProperties) =>
   updateObject({ height: `${height}px` }, style);
 
-const getMask = (itemHeight: number): ComponentType<MaskPropsType> => {
-  const Mask = ({ className, style, ...others }: MaskPropsType) => (
+const getMask = (itemHeight: number): ComponentType<MaskProps> => {
+  const Mask = ({ className, style, ...others }: MaskProps) => (
     <div
       className={[styles.mask, className].join(' ')}
       {...others}
@@ -38,27 +42,26 @@ const getMask = (itemHeight: number): ComponentType<MaskPropsType> => {
   return Mask;
 };
 
-export type PickerPropsType = {
-  className?: string,
-  style?: StyleSheet,
-  scrollerBackground?: string,
-  minCount: number,
-  maxCount: number,
-  preloadCount?: number,
-  onChange?: number => void,
-  height?: number,
-  iconAdd?: Element<ComponentType<HTMLElement>>,
-  iconMinus?: Element<ComponentType<HTMLElement>>,
+export interface PickerProps {
+  className?: string;
+  style?: CSSProperties;
+  scrollerBackground?: string;
+  maxCount: number;
+  preloadCount?: number;
+  onChange?: (index: number) => void;
+  height?: number;
+  iconAdd?: ReactElement<HTMLElement>;
+  iconMinus?: ReactElement<HTMLElement>;
   renderMask?: (
-    ComponentType<MaskPropsType>
-  ) => Element<ComponentType<MaskPropsType>>,
-  current: number,
-  moving: MovingType,
-  setCurrent: number => void,
-  setMoving: MovingType => void
-};
+    Mask: ComponentType<MaskProps>
+  ) => ReactElement<ComponentType<MaskProps>>;
+}
 
-const Picker = ({
+interface InnerPickerProps extends PickerProps, PickerState, DispatchMapProps {
+  minCount: number;
+}
+
+const Picker: ComponentType<InnerPickerProps> = ({
   className,
   style,
   scrollerBackground = 'white',
@@ -69,25 +72,24 @@ const Picker = ({
   height = 150,
   iconAdd = <i className="material-icons">keyboard_arrow_up</i>,
   iconMinus = <i className="material-icons">keyboard_arrow_down</i>,
-  // eslint-disable-next-line react/display-name
   renderMask = Mask => <Mask />,
   current,
   moving,
   setCurrent,
   setMoving
-}: PickerPropsType) => {
+}: InnerPickerProps) => {
   if (!maxCount) {
     throw new Error('Please input maxCount parameter');
   }
 
-  const layoutRef: { current: null | HTMLElement } = useRef(null);
-  const touchRef: TouchRefType = useRef(false);
+  const layoutRef: MutableRefObject<null | HTMLDivElement> = useRef(null);
+  const touchRef: TouchRef = useRef(false);
 
   const isLoop = minCount === 0;
 
   const itemHeight = height / 5;
 
-  const selectNumber = n => {
+  const selectNumber: SelectNumberOperator = n => {
     if (n === null) {
       return;
     }
@@ -103,7 +105,7 @@ const Picker = ({
   const add = addGenerator(maxCount, isLoop, minCount);
   const minus = minusGenerator(minCount, isLoop, maxCount);
 
-  const initialLayout = (scrollTop, itemHeight) => {
+  const initialLayout = (scrollTop: number, itemHeight: number) => {
     if (layoutRef.current) {
       layoutRef.current.scrollTop = scrollTop;
       layoutRef.current.style.setProperty('--item-height', `${itemHeight}px`);
@@ -112,7 +114,7 @@ const Picker = ({
 
   const [
     { bind, velocity, down, y, diffY },
-    { isTappedWhileMoving, endMoving, next, prev }
+    { endMoving, next, prev }
   ] = useGestureEffect(
     initialLayout,
     itemHeight,
@@ -127,7 +129,9 @@ const Picker = ({
 
   const calculate = calculateGenerator(add, minus);
 
-  const operatorWithNoAnime = operator => () => {
+  const operatorWithNoAnime = (
+    operator: MoveOperator
+  ): React.MouseEventHandler<HTMLButtonElement> => () => {
     endMoving();
     operator();
   };
@@ -144,10 +148,6 @@ const Picker = ({
     next,
     prev
   );
-
-  if (moving.className && isTappedWhileMoving) {
-    endMoving();
-  }
 
   if (down && !touchRef.current) {
     touchRef.current = true;
@@ -191,7 +191,7 @@ const Picker = ({
                 height: itemHeight,
                 lineHeight: `${itemHeight}px`,
                 transform: touchRef.current
-                  ? `rotateX(${45 * (diff + -y / itemHeight)}deg)`
+                  ? `rotateX(${45 * (diff - y / itemHeight)}deg)`
                   : `rotateX(${45 * diff}deg)`
               }}
               key={diff}

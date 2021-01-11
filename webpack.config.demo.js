@@ -1,16 +1,16 @@
 var path = require('path');
 module.exports = {
-  entry: ['./example/index.js'],
+  entry: ['./example/index.tsx'],
   output: {
     path: path.resolve(__dirname, 'demo'),
     publicPath: '/demo/',
-    filename: 'example.js'
+    filename: 'example.js',
+    chunkFilename: '[name].bundle.js'
   },
   module: {
     rules: [
       {
-        test: /\.js$/,
-        exclude: /node_modules/,
+        test: /\.(ts|tsx)$/,
         use: {
           loader: 'babel-loader'
         }
@@ -41,5 +41,8 @@ module.exports = {
         include: /node_modules/
       }
     ]
+  },
+  resolve: {
+    extensions: ['.js', '.ts', '.tsx']
   }
 };

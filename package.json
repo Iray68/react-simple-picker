@@ -2,11 +2,13 @@
   "name": "react-simple-picker",
   "version": "1.0.3",
   "description": "Scrollable number picker",
-  "main": "dist/bundle.js",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "scripts": {
-    "prepublish": "webpack -p",
-    "build:example": "webpack -p --config webpack.config.demo.js",
-    "example": "webpack -p && webpack-dev-server --mode development --config webpack.config.demo.js --open",
+    "build:declareTsc": "tcm -c src && tsc",
+    "prepublish": "npm run build:declareTsc && webpack -p",
+    "build:example": "tcm -c example && webpack -p --config webpack.config.demo.js",
+    "example": "tcm -c example && npm run prepublish && webpack-dev-server --mode development --config webpack.config.demo.js --open",
     "lint": "eslint --fix src"
   },
   "repository": {
@@ -22,22 +24,27 @@
   "devDependencies": {
     "@babel/core": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
-    "@babel/preset-flow": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
+    "@babel/preset-typescript": "^7.12.7",
+    "@types/lodash": "^4.14.167",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
+    "@typescript-eslint/eslint-plugin": "^4.12.0",
+    "@typescript-eslint/parser": "^4.12.0",
     "babel-eslint": "^10.0.2",
     "babel-loader": "^8.0.6",
     "css-loader": "^3.2.0",
-    "eslint": "^6.2.2",
+    "eslint": "^7.17.0",
     "eslint-config-prettier": "^6.1.0",
-    "eslint-plugin-flowtype": "^4.2.0",
     "eslint-plugin-prettier": "^3.1.0",
     "eslint-plugin-react": "^7.14.3",
     "eslint-plugin-react-hooks": "^2.0.1",
-    "flow-bin": "^0.106.1",
     "prettier": "^1.18.2",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "style-loader": "^1.0.0",
+    "typescript": "^4.1.3",
+    "typescript-plugin-css-modules": "^3.0.1",
     "webpack": "^4.39.2",
     "webpack-cli": "^3.3.7",
     "webpack-dev-server": "^3.8.0"
@@ -45,7 +52,7 @@
   "dependencies": {
     "lodash": "^4.17.15",
     "normalize.css": "^8.0.1",
-    "react-with-gesture": "^4.0.8"
+    "react-use-gesture": "^9.0.0-beta.11"
   },
   "directories": {
     "example": "example"
