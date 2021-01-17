@@ -46,7 +46,7 @@ export function initMoveHandler(
     setMoving({ className: animationStyle, time: movingTime });
 
     timer.current = setTimeout(() => {
-      const target = totalShiftCount - remainCount;
+      const target = totalShiftCount - remainCount + 1;
 
       selectNumber(operator(current, target));
       endMoving();
