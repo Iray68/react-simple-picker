@@ -6,9 +6,9 @@ export interface MoveHandler {
   (
     operator: Operator,
     animationStyle: string,
-    i: number,
+    remainCount: number,
     isSkipAnimation?: boolean,
-    j?: number
+    totalShiftCount?: number
   ): void;
 }
 
@@ -32,25 +32,34 @@ export function initMoveHandler(
   const move: MoveHandler = (
     operator,
     animationStyle,
-    i = 1,
+    remainCount = 1,
     isSkipAnimation,
-    j = i
+    totalShiftCount = remainCount
   ) => {
     if (isSkipAnimation) {
-      selectNumber(operator(current, j));
+      selectNumber(operator(current, totalShiftCount));
       return;
     }
 
-    const movingTime = i === 1 ? MAX_ANIME_TIME / 2 : MAX_ANIME_TIME - i * 2;
+    const movingTime =
+      remainCount === 1 ? MAX_ANIME_TIME / 2 : MAX_ANIME_TIME - remainCount * 2;
     setMoving({ className: animationStyle, time: movingTime });
 
     timer.current = setTimeout(() => {
-      selectNumber(operator(current, j - i + 1));
+      const target = totalShiftCount - remainCount;
+
+      selectNumber(operator(current, target));
       endMoving();
 
-      if (i - 1 > 0 && !touchRef.current) {
+      if (totalShiftCount !== target && !touchRef.current) {
         requestAnimationFrame(() =>
-          move(operator, animationStyle, i - 1, isSkipAnimation, j)
+          move(
+            operator,
+            animationStyle,
+            remainCount - 1,
+            isSkipAnimation,
+            totalShiftCount
+          )
         );
       }
     }, movingTime);

@@ -13,10 +13,10 @@ import Row from './Row';
 import { DispatchMapProps, PickerState } from './index';
 import {
   addGenerator,
-  calculateGenerator,
+  buildPositionCalculator,
   minusGenerator
 } from './useCases/calculator';
-import { initGestureHandler, MoveOperator } from './useCases/gesture';
+import { handleGesture, MoveOperator } from './useCases/gesture';
 import { useGestureEffect } from './hook/useGestureEffect';
 import { SelectNumberOperator, TouchRef } from './useCases/move';
 import { updateObject } from './util';
@@ -130,25 +130,12 @@ const Picker: ComponentType<InnerPickerProps> = ({
 
   const calculate = calculateGenerator(add, minus);
 
-  const operatorWithNoAnime = (
+  const operateAndStopAnimation = (
     operator: MoveOperator
   ): MouseEventHandler<HTMLButtonElement> => () => {
     endMoving();
     operator();
   };
-
-  const handleGesture = initGestureHandler(
-    velocity,
-    diffY,
-    itemHeight,
-    y,
-    isLoop,
-    maxCount,
-    current,
-    minCount,
-    next,
-    prev
-  );
 
   if (down && !touchRef.current) {
     touchRef.current = true;
@@ -156,7 +143,26 @@ const Picker: ComponentType<InnerPickerProps> = ({
 
   if (touchRef.current && !down) {
     if (y && diffY > itemHeight) {
-      handleGesture();
+      handleGesture(
+        velocity,
+        diffY,
+        itemHeight,
+        y,
+        isLoop,
+        maxCount,
+        current,
+        minCount
+      ).then(countingResult => {
+        const { movingCount, isSkipAnimation } = countingResult;
+
+        const diff = Math.abs(movingCount);
+
+        if (movingCount > 0) {
+          next(diff, isSkipAnimation);
+        } else {
+          prev(diff, isSkipAnimation);
+        }
+      });
     }
     touchRef.current = false;
   }
@@ -166,7 +172,7 @@ const Picker: ComponentType<InnerPickerProps> = ({
       className={[styles.border, className].join(' ')}
       style={updateHeightWithStyle(height, style)}
     >
-      <Button icon={iconAdd} onClick={operatorWithNoAnime(next)} />
+      <Button icon={iconAdd} onClick={operateAndStopAnimation(next)} />
       <div
         ref={layoutRef}
         className={styles.layout}
@@ -201,7 +207,7 @@ const Picker: ComponentType<InnerPickerProps> = ({
           ))}
         </div>
       </div>
-      <Button icon={iconMinus} onClick={operatorWithNoAnime(prev)} />
+      <Button icon={iconMinus} onClick={operateAndStopAnimation(prev)} />
     </div>
   );
 };

@@ -40,13 +40,16 @@ export function minusGenerator(
   };
   return minus;
 }
-export function calculateGenerator(next: Operator, prev: Operator): Operator {
+export function buildPositionCalculator(
+  add: Operator,
+  minus: Operator
+): Operator {
   const calculate = (current: number, diff: number) => {
     if (diff === 0) {
       return current;
     }
 
-    return diff > 0 ? next(current, diff) : prev(current, diff * -1);
+    return diff > 0 ? add(current, diff) : minus(current, diff * -1);
   };
   return calculate;
 }
