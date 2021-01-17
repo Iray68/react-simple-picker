@@ -19,7 +19,7 @@ import {
 import { handleGesture, MoveOperator } from './useCases/gesture';
 import { useGestureEffect } from './hook/useGestureEffect';
 import { SelectNumberOperator, TouchRef } from './useCases/move';
-import { updateObject } from './util';
+import { updateObject, parseCalculateResultToString, compose } from './util';
 
 export interface MaskProps {
   className?: string;
@@ -128,7 +128,10 @@ const Picker: ComponentType<InnerPickerProps> = ({
     minus
   );
 
-  const calculate = calculateGenerator(add, minus);
+  const positionCalculator = compose(
+    buildPositionCalculator,
+    parseCalculateResultToString
+  )(add, minus);
 
   const operateAndStopAnimation = (
     operator: MoveOperator
@@ -202,7 +205,7 @@ const Picker: ComponentType<InnerPickerProps> = ({
                   : `rotateX(${45 * diff}deg)`
               }}
               key={diff}
-              value={String(calculate(current, diff))}
+              value={positionCalculator(current, diff)}
             />
           ))}
         </div>
