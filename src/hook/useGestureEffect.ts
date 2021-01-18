@@ -37,6 +37,21 @@ interface MoveOperators {
   prev: MoveOperator;
 }
 
+function useTouchPrevent(preventTouchRef: MutableRefObject<boolean>) {
+  useEffect(() => {
+    const preventDefault = (e: TouchEvent) => {
+      if (preventTouchRef.current) {
+        e.preventDefault();
+      }
+    };
+
+    document.addEventListener('touchmove', preventDefault, {
+      passive: false
+    });
+    return () => document.removeEventListener('touchmove', preventDefault);
+  }, [preventTouchRef.current]);
+}
+
 export const useGestureEffect = (
   initialLayout: (scrollTop: number, itemHeight: number) => void,
   itemHeight: number,
@@ -47,9 +62,11 @@ export const useGestureEffect = (
   add: NumberOperator,
   minus: NumberOperator
 ): [Gesture, MoveOperators] => {
+  const preventTouchRef = useRef(false);
   const timer: TimerRef = useRef(null);
 
   const initial = useCallback(initialLayout, [itemHeight, preloadCount]);
+  useTouchPrevent(preventTouchRef);
 
   useEffect(() => {
     initial(itemHeight * (preloadCount - 1), itemHeight);
