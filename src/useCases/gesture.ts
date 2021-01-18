@@ -1,7 +1,3 @@
-export interface MoveOperator {
-  (movingCount?: number, isSkipAnimation?: boolean): void;
-}
-
 export function handleGesture(
   velocity: number,
   diffY: number,

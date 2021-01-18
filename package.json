@@ -9,9 +9,9 @@
   ],
   "scripts": {
     "test": "jest --coverage",
-    "build:declareTsc": "tcm -c src && tsc",
+    "build:declareTsc": "tcm -c src && npm run test && tsc",
     "prepublish": "npm run build:declareTsc && webpack -p",
-    "build:example": "tcm -c example && webpack -p --config webpack.config.demo.js",
+    "build:example": "tcm -c example && npm run test && webpack -p --config webpack.config.demo.js",
     "example": "tcm -c example && npm run prepublish && webpack-dev-server --mode development --config webpack.config.demo.js --open",
     "lint": "eslint --fix src"
   },

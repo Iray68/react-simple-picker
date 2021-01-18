@@ -1,10 +1,15 @@
 import { MovingState } from '../index';
-import { SelectNumberOperator, TimerRef, TouchRef } from '../useCases/move';
+import { SelectNumberOperator, TimerRef } from '../useCases/move';
 import { initMoveHandler } from '../useCases/move';
-import { Operator } from '../useCases/calculator';
+import { NumberOperator } from '../useCases/calculator';
 import { useGesture } from 'react-use-gesture';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { MoveOperator } from '../useCases/gesture';
+import {
+  MutableRefObject,
+  useCallback,
+  useEffect,
+  useRef,
+  useState
+} from 'react';
 import styles from '../index.css';
 import { ReactEventHandlers } from 'react-use-gesture/dist/types';
 
@@ -22,6 +27,10 @@ interface Gesture {
   diffY: number;
 }
 
+export interface MoveOperator {
+  (movingCount?: number, isSkipAnimation?: boolean): void;
+}
+
 interface MoveOperators {
   endMoving: MoveOperator;
   next: MoveOperator;
@@ -35,10 +44,19 @@ export const useGestureEffect = (
   setMoving: (moving: MovingState) => void,
   selectNumber: SelectNumberOperator,
   current: number,
-  touchRef: TouchRef,
-  add: Operator,
-  minus: Operator
+  add: NumberOperator,
+  minus: NumberOperator
 ): [Gesture, MoveOperators] => {
+  const timer: TimerRef = useRef(null);
+
+  const initial = useCallback(initialLayout, [itemHeight, preloadCount]);
+
+  useEffect(() => {
+    initial(itemHeight * (preloadCount - 1), itemHeight);
+
+    return () => clearTimeoutIfExist(timer.current);
+  }, [initial, itemHeight, preloadCount]);
+
   const [{ y, velocity, down }, setDrag] = useState(() => ({
     y: 0,
     velocity: 0,
@@ -51,34 +69,27 @@ export const useGestureEffect = (
     setDrag({ y: 0, velocity: 0, down: false });
   };
 
-  const bind = useGesture(
-    {
-      onDrag: ({ down, velocity, movement: [, y] }) =>
-        setDrag({ y, down, velocity }),
-      onPointerDown: () => endMoving()
+  const bind = useGesture({
+    onDrag: ({ down, velocity, movement: [, y] }) => {
+      setDrag({ y, down, velocity });
+      if (!down && preventTouchRef.current) {
+        preventTouchRef.current = false;
+      }
     },
-    {
-      drag: { initial: () => [0, 0] }
+    onPointerDown: () => {
+      if (!preventTouchRef.current) {
+        preventTouchRef.current = true;
+      }
+      endMoving();
     }
-  );
-
-  const timer: TimerRef = useRef(null);
-
-  const initial = useCallback(initialLayout, [itemHeight, preloadCount]);
-
-  useEffect(() => {
-    initial(itemHeight * (preloadCount - 1), itemHeight);
-
-    return () => clearTimeoutIfExist(timer.current);
-  }, [initial, itemHeight, preloadCount]);
+  });
 
   const move = initMoveHandler(
     selectNumber,
     current,
     setMoving,
     timer,
-    endMoving,
-    touchRef
+    endMoving
   );
 
   const next: MoveOperator = (count = 1, isSkipAnimation) =>

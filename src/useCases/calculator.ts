@@ -1,13 +1,15 @@
-export interface Operator {
-  (raw: number, count: number): number | null;
+export interface Operator<T, R> {
+  (raw: T, count: T): R;
 }
+
+export type NumberOperator = Operator<number, number | null>;
 
 export function addGenerator(
   maxCount: number,
   displayLoop: boolean,
   minCount: number
-): Operator {
-  const add: Operator = (current, diff = 1) => {
+): NumberOperator {
+  const add: NumberOperator = (current, diff = 1) => {
     const total = current + diff;
     if (total > maxCount) {
       if (!displayLoop) {
@@ -25,8 +27,8 @@ export function minusGenerator(
   minCount: number,
   displayLoop: boolean,
   maxCount: number
-): Operator {
-  const minus: Operator = (current, diff = 1) => {
+): NumberOperator {
+  const minus: NumberOperator = (current, diff = 1) => {
     const total = current + diff * -1;
     if (total < minCount) {
       if (!displayLoop) {
@@ -41,9 +43,9 @@ export function minusGenerator(
   return minus;
 }
 export function buildPositionCalculator(
-  add: Operator,
-  minus: Operator
-): Operator {
+  add: NumberOperator,
+  minus: NumberOperator
+): NumberOperator {
   const calculate = (current: number, diff: number) => {
     if (diff === 0) {
       return current;

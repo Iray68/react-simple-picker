@@ -1,10 +1,11 @@
 import { MovingState } from '../index';
-import { Operator } from './calculator';
+import { NumberOperator, Operator } from './calculator';
 import { MutableRefObject } from 'react';
+import { compose, delay } from '../util';
 
 export interface MoveHandler {
   (
-    operator: Operator,
+    operator: NumberOperator,
     animationStyle: string,
     remainCount: number,
     isSkipAnimation?: boolean,
@@ -23,9 +24,8 @@ export function initMoveHandler(
   selectNumber: SelectNumberOperator,
   current: number,
   setMoving: (moving: MovingState) => void,
-  timer: TimerRef,
-  endMoving: () => void,
-  touchRef: TouchRef
+  timerRef: TimerRef,
+  endMoving: () => void
 ): MoveHandler {
   const MAX_ANIME_TIME = 150;
 
@@ -36,8 +36,10 @@ export function initMoveHandler(
     isSkipAnimation,
     totalShiftCount = remainCount
   ) => {
+    const selectNumberOperator = compose(selectNumber, operator);
+
     if (isSkipAnimation) {
-      selectNumber(operator(current, totalShiftCount));
+      selectNumberOperator(current, totalShiftCount);
       return;
     }
 
@@ -45,13 +47,13 @@ export function initMoveHandler(
       remainCount === 1 ? MAX_ANIME_TIME / 2 : MAX_ANIME_TIME - remainCount * 2;
     setMoving({ className: animationStyle, time: movingTime });
 
-    timer.current = setTimeout(() => {
+    delay(movingTime, timerRef).then(() => {
       const target = totalShiftCount - remainCount + 1;
 
-      selectNumber(operator(current, target));
+      selectNumberOperator(current, target);
       endMoving();
 
-      if (totalShiftCount !== target && !touchRef.current) {
+      if (totalShiftCount !== target) {
         requestAnimationFrame(() =>
           move(
             operator,
@@ -62,7 +64,7 @@ export function initMoveHandler(
           )
         );
       }
-    }, movingTime);
+    });
   };
   return move;
 }

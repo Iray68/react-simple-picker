@@ -16,8 +16,8 @@ import {
   buildPositionCalculator,
   minusGenerator
 } from './useCases/calculator';
-import { handleGesture, MoveOperator } from './useCases/gesture';
-import { useGestureEffect } from './hook/useGestureEffect';
+import { handleGesture } from './useCases/gesture';
+import { useGestureEffect, MoveOperator } from './hook/useGestureEffect';
 import { SelectNumberOperator, TouchRef } from './useCases/move';
 import { updateObject, parseCalculateResultToString, compose } from './util';
 
@@ -123,14 +123,13 @@ const Picker: ComponentType<InnerPickerProps> = ({
     setMoving,
     selectNumber,
     current,
-    touchRef,
     add,
     minus
   );
 
-  const positionCalculator = compose(
-    buildPositionCalculator,
-    parseCalculateResultToString
+  const calculatePosition = compose(
+    parseCalculateResultToString,
+    buildPositionCalculator
   )(add, minus);
 
   const operateAndStopAnimation = (
@@ -205,7 +204,7 @@ const Picker: ComponentType<InnerPickerProps> = ({
                   : `rotateX(${45 * diff}deg)`
               }}
               key={diff}
-              value={positionCalculator(current, diff)}
+              value={calculatePosition(current, diff)}
             />
           ))}
         </div>
