@@ -32,7 +32,7 @@
 <script>
     function onDocClick() {
       console.log('send ga event');
-      ga('send', 'event', '導覽清單', '點擊', '查看文件', 200);
+      window.dataLayer.push({'event': 'doc-click'});
     }
 </script>
 <script src="./demo/example.js"></script>
