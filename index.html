@@ -24,11 +24,17 @@
         Source
     </a>
     <span>|</span>
-    <a href="https://github.com/Iray68/react-simple-picker/#readme" aria-label="Doc">
+    <a href="https://github.com/Iray68/react-simple-picker/#readme" aria-label="Doc" onclick="onDocClick()">
         Doc
     </a>
     <div id="app"></div>
 </div>
+<script>
+    function onDocClick() {
+      console.log('send ga event');
+      ga('send', 'event', '導覽清單', '點擊', '查看文件', 200);
+    }
+</script>
 <script src="./demo/example.js"></script>
 </body>
 </html>
